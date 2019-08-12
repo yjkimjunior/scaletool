@@ -1,17 +1,31 @@
 
-import { createType, interfaceRegistry, FunctionMetadata } from '@polkadot/api';
-import extrinsics from '@polkadot/api-metadata/extrinsics/static';
+import '@polkadot/types/injector';
+
+import { Call, GenericCall, TypeRegistry } from '@polkadot/types';
+import storageFromMeta from '@polkadot/api-metadata/storage/fromMetadata';
+import extrinsicsFromMeta from '@polkadot/api-metadata/extrinsics/fromMetadata';
 import React, { useEffect, useState } from 'react';
-import { Container, Divider, Header, Grid, Button, Menu } from 'semantic-ui-react/dist/commonjs';
+import { Container, Divider, Header, Grid } from 'semantic-ui-react/dist/commonjs';
+
+import { CallDetails } from './CallDetails.jsx';
+import { Constants } from './Constants.jsx';
+import { Methods } from './Methods.jsx';
+import { Sections } from './Sections.jsx';
+
+import json from '@polkadot/types/Metadata/static';
+import { ClassOf, Metadata } from '@polkadot/types'
+const metadata = new Metadata(json);
+const extrinsics = extrinsicsFromMeta(metadata);
+const storage = storageFromMeta(metadata);
 
 function App() {
   const [method, setMethod] = useState();
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
-  const [section, setSection] = useState(['system', extrinsics['system']]);
-  
-  // useEffect(() => {
-
-  // }, [section])
+  const [section, setSection] = useState(['balances', extrinsics['balances']]);
+    
+  useEffect(() => {
+    GenericCall.injectMethods(extrinsics);
+  }, []);
 
   const zoomSection = (sectionIndex, sectionName) => {
     console.log('zoom section => ', extrinsics[sectionName])
@@ -20,53 +34,8 @@ function App() {
   }
 
   const zoomMethod = (extrinsicFn) => {
-    console.log('zoom method => ', extrinsicFn);
-    setMethod(extrinsicFn);
-  }
-
-  const renderSections = () => {
-    return (
-      <Grid.Column width='5'>
-        <Header>Extrinsic Section</Header>
-        <Menu activeIndex={activeSectionIndex} vertical>
-          {
-            Object.keys(extrinsics).map((v, i) => {
-              return (
-                <Menu.Item> {i}. <Button onClick={() => zoomSection(i, v)}>{v}</Button></Menu.Item>
-              )
-            })
-          }
-        </Menu>
-      </Grid.Column>
-    )
-  }
-
-  const renderMethods = () => {
-    const sectionMethods = section[1];
-    console.log('section methods => ', sectionMethods);
-    return (
-      <Grid.Column width='5'>
-        <Header>Methods for: </Header><p>{section[0]}</p>
-        <Menu vertical>
-        {
-          Object.keys(sectionMethods).map((v, i) => {
-            
-            return (
-              <Menu.Item key={i}><Button onClick={() => zoomMethod(sectionMethods[v])}>{v}</Button></Menu.Item>
-            )
-          })
-        }
-        </Menu>
-      </Grid.Column>
-    )
-  }
-
-  const renderCallDetails = () => {
-    return (
-      <Grid.Column width='5'>
-        <Header>Call Definitions for:</Header>
-      </Grid.Column>
-    )
+    console.log('zoom method meta => ', extrinsicFn.meta);
+    setMethod(() => extrinsicFn);
   }
 
   return (
@@ -75,11 +44,17 @@ function App() {
         <Divider />
         <Grid.Row><Header>How To SCALE</Header></Grid.Row>
         <Divider />
+        <Grid.Row><Header>Extrinsics</Header></Grid.Row>
+        <Divider />
         <Grid.Row>
-          {renderSections()}
-          {renderMethods()}
-          {renderCallDetails()}
+          <Sections activeSectionIndex={activeSectionIndex} zoomSection={zoomSection} />
+          <Methods section={section} zoomMethod={zoomMethod} />
+          <CallDetails method={method} />
         </Grid.Row>
+        <Divider />
+        <Grid.Row><Header> Chain Constants </Header></Grid.Row>
+        <Divider />
+        <Grid.Row><Constants /></Grid.Row>
       </Grid>
     </Container>
   );
