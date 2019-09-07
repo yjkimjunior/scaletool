@@ -11,8 +11,6 @@ export function Constants (props) {
   useEffect(() => {
     const { constants } = props;
 
-    debugger;
-
     setConstants(constants)
   }, [props]);
 

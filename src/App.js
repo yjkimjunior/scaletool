@@ -15,6 +15,7 @@ import { Connect } from './Connect.jsx';
 import { Constants } from './Constants.jsx';
 import { Methods } from './Methods.jsx';
 import { Sections } from './Sections.jsx';
+import { Storage } from './Storage.jsx';
 
 function App() {
   const [constants, setConstants] = useState();
@@ -38,8 +39,6 @@ function App() {
     const consts = constsFromMeta(metadata);
     const extrinsics = extrinsicsFromMeta(metadata);
     const storage = storageFromMeta(metadata);
-
-    GenericCall.injectMethods(extrinsics);
 
     setMetadata(metadata);
     setConstants(consts);
@@ -73,7 +72,7 @@ function App() {
             ? (
               <React.Fragment>
                   <Grid.Row>
-                    <Header>Extrinsics</Header>
+                    <Header>Extrinsics (api.tx....) </Header>
                   </Grid.Row>
                   <Divider />
                   <Grid.Row>
@@ -92,7 +91,14 @@ function App() {
                   </Grid.Row>
                   <Divider />
                   <Grid.Row>
-                    <Header> Chain Constants </Header>
+                    <Header> Storage (api.query....) </Header>
+                  </Grid.Row>
+                  <Grid.Row>
+                      <Storage storage={storage} />
+                  </Grid.Row>
+                  <Divider />
+                  <Grid.Row>
+                    <Header> Chain Constants (api.consts...) </Header>
                   </Grid.Row>
                   <Divider />
                   <Grid.Row> <Constants constants={constants} /> </Grid.Row>
