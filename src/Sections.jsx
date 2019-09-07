@@ -8,7 +8,7 @@ export function Sections (props) {
   const { activeSectionIndex, zoomSection } = props;
 
   return (
-    <Grid.Column width='5'>
+    <React.Fragment>
       <Header>Extrinsic Section</Header>
       <Menu activeIndex={activeSectionIndex} vertical>
         {
@@ -19,6 +19,6 @@ export function Sections (props) {
           })
         }
       </Menu>
-    </Grid.Column>
+    </React.Fragment>
   );
 }

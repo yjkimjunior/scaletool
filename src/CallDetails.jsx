@@ -33,7 +33,7 @@ export function CallDetails (props) {
   };
 
   return (
-    <Grid.Column width='5'>
+    <React.Fragment>
       <Header>Call Definitions for: </Header> { method && method.meta.name }
       <Header>Documentation: </Header> { method && method.meta.docs }
       <Header>Params: </Header> 
@@ -48,6 +48,6 @@ export function CallDetails (props) {
           )
         })
       }
-    </Grid.Column>
+    </React.Fragment>
   );
 } {/* <li>Type Def: {typeDefs[param.type.type].info.toU8a()} </li> */ }
